@@ -1,7 +1,11 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <h1>hello! курс доллара на сегодня {{ course }}</h1>
-    <h2>{{ name }}</h2>
-    <h3>{{ data }}</h3>
+    <h1>hello people! Курс доллара США на сегодня: {{ course }} руб.</h1>
+
+    <h4>
+        {% for item in data %}
+        {{ item }}<br>
+        {% endfor %}
+    </h4>
 {% endblock %}
