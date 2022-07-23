@@ -6,7 +6,7 @@ import httplib2
 import requests
 import xmltodict
 from oauth2client.service_account import ServiceAccountCredentials
-
+from sheetfu import SpreadsheetApp
 
 def get_gogle():
     # Файл, полученный в Google Developer Console
@@ -25,11 +25,21 @@ def get_gogle():
     # Пример чтения файла
     values = service.spreadsheets().values().get(
         spreadsheetId=spreadsheet_id,
-        range='A1:D52',
+        range='Лист1!A1:D52',
         # majorDimension='COLUMNS'
         majorDimension='ROWS'
     ).execute()
-    pprint(values['values'])
+    # count = service.spreadsheets().values().get_data_range()
+    pprint(values['values'],)
+
+def get_gogle2():
+    CREDENTIALS_FILE = 'creds.json'
+    spreadsheet_id = '1-fh9NMsarGBp0ILsNFqhpdTBL_Nzlmaub13kdiZU2bI'
+    sa = SpreadsheetApp(CREDENTIALS_FILE)
+    spreadsheet = sa.open_by_id(spreadsheet_id=spreadsheet_id)
+    sheet = spreadsheet.get_sheet_by_name('Лист1')
+    data_range = sheet.get_data_range()
+    pprint(type(data_range))
 
 def get_course():
     response = requests.get(
@@ -42,4 +52,5 @@ def get_course():
 
     return 'на сегодня курс неизвестен'
 
-print(float(get_course().replace(',', '.')))
+# print(float(get_course().replace(',', '.')))
+get_gogle2()

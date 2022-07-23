@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <h1>hello people! Курс доллара США на сегодня: {{ course }} руб.</h1>
+    <h1>Курс доллара США на сегодня: {{ course }} руб.</h1>
     <table border="1" solid="grey">
     <tr>
         <th>№</th>
@@ -14,9 +14,9 @@
         <tr>
             <td>{{ item.serial_numb }}</td>
             <td>{{ item.order_numb }}</td>
-            <td>{{ item.price_usd }}</td>
-            <td>{{ item.price_rub }}</td>
-            <td>{{ item.delivery_date }}</td>
+            <td  style="text-align:right">{{ item.price_usd }}</td>
+            <td  style="text-align:right">{{ item.price_rub }}</td>
+            <td  style="text-align:right">{{ item.delivery_date }}</td>
         </tr>
         {% endfor %}
     </table>

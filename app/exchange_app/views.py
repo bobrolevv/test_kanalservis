@@ -26,10 +26,12 @@ def get_google_data():
     # Читаем файл
     values = service.spreadsheets().values().get(
         spreadsheetId=spreadsheet_id,
-        range='A2:D52',
+        range='A2:D52', # TODO: получать диап. заполненных ячеек динамически
         majorDimension='ROWS'
     ).execute()
     return (values['values'])
+
+
 
 def get_course():
     '''
@@ -47,11 +49,12 @@ def get_course():
     return 'на сегодня курс неизвестен'
 
 
-def exhange(request):
-    data = get_google_data()
-    course = get_course()
-    Data.objects.all().delete()
+def index(request):
+    data = get_google_data()        # получаем данные из таблицы
+    course = get_course()           # получаем курс доллара
+    Data.objects.all().delete()     # удаляем старые данные из базы
 
+    # добавляем новые данные в базу
     for item in data:
         Data.objects.create(
             serial_numb=item[0],
@@ -63,12 +66,13 @@ def exhange(request):
 
     data = Data.objects.all()
 
-    name = 'mr. And'
+    # формируем набор данных
     context = {
         'course': course,
         'data': data
     }
 
+    # возвращаем рендер страницы, используя шаблон index.html
     return render(
         request=request,
         template_name='exchange_app/index.html',
