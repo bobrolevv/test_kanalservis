@@ -32,7 +32,6 @@ def get_google_data():
     return (values['values'])
 
 
-
 def get_course():
     '''
     функция получает курс доллара с сайта ЦБ РФ на текущую дату

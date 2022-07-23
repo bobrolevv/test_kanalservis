@@ -69,6 +69,7 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+# TODO: переход на PostgeSQL
 
 
 # Password validation
