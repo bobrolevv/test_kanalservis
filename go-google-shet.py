@@ -42,4 +42,4 @@ def get_course():
 
     return 'на сегодня курс неизвестен'
 
-print(get_course())
+print(float(get_course().replace(',', '.')))

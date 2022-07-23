@@ -2,10 +2,23 @@
 
 {% block content %}
     <h1>hello people! Курс доллара США на сегодня: {{ course }} руб.</h1>
-
-    <h4>
+    <table border="1" solid="grey">
+    <tr>
+        <th>№</th>
+        <th>заказ №</th>
+        <th>стоимость, $</th>
+        <th>стоимость, руб</th>
+        <th>срок поставки</th>
+    </tr>
         {% for item in data %}
-            {{ item }}<br>
+        <tr>
+            <td>{{ item.serial_numb }}</td>
+            <td>{{ item.order_numb }}</td>
+            <td>{{ item.price_usd }}</td>
+            <td>{{ item.price_rub }}</td>
+            <td>{{ item.delivery_date }}</td>
+        </tr>
         {% endfor %}
-    </h4>
+    </table>
+
 {% endblock %}

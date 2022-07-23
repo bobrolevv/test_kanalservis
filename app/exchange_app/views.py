@@ -4,6 +4,7 @@ import requests
 import xmltodict
 from django.shortcuts import render
 from oauth2client.service_account import ServiceAccountCredentials
+from .models import Data
 
 
 def get_google_data():
@@ -25,7 +26,7 @@ def get_google_data():
     # Читаем файл
     values = service.spreadsheets().values().get(
         spreadsheetId=spreadsheet_id,
-        range='A1:D52',
+        range='A2:D52',
         majorDimension='ROWS'
     ).execute()
     return (values['values'])
@@ -33,7 +34,7 @@ def get_google_data():
 def get_course():
     '''
     функция получает курс доллара с сайта ЦБ РФ на текущую дату
-    возвращает: строку - курс доллара к рублю
+    возвращает: число(float) - курс доллара к рублю
     '''
     # запрос на сайт ЦБ РФ
     response = requests.get(
@@ -41,17 +42,31 @@ def get_course():
     valutes = xmltodict.parse(response).get('ValCurs').get('Valute')
     for val in valutes:
         if val['@ID'] == 'R01235':
-            return val['Value']
+            return float(val['Value'].replace(',', '.'))
 
     return 'на сегодня курс неизвестен'
 
 
 def exhange(request):
+    data = get_google_data()
+    course = get_course()
+    Data.objects.all().delete()
+
+    for item in data:
+        Data.objects.create(
+            serial_numb=item[0],
+            order_numb=item[1],
+            price_usd=item[2],
+            price_rub=float(item[2]) * course,
+            delivery_date=item[3],
+        )
+
+    data = Data.objects.all()
+
     name = 'mr. And'
     context = {
-        'name': name,
-        'course': get_course(),
-        'data': get_google_data()
+        'course': course,
+        'data': data
     }
 
     return render(
