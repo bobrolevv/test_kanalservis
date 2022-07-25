@@ -33,34 +33,36 @@ sudo apt install docker.io
 TELEGRAM_TOKEN = 'your-tlg-token'
 TELEGRAM_CHAT_ID = 'your-chat-id'
 
+# В тестовом режимен проект работает с БД SQLite
+
+# для подключения БД PostgeSQL 
 NAME = 'your-project-name'
 USER = 'your-projectuser-user'
 PASSWORD = 'your-password'
+так же нужно будет отдельно настроить PostgreQQL (не описано)
 ```
-  
+
+* Для работы с google-shets необходимо будет получить токен авторизации 
+в виде .json файла. Документация доступна по ссылке: https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.values
+  - данный файл необходимо переименовать в creds.json и поместить в папку app/exchange_app
+
 * Соберите docker образ:
 ```
 sudo docker build -t te-kan .
-
 ```
-* После успешной сборки на сервере выполните команды (только после первого деплоя):
-    - Соберите статические файлы:
-    ```
-    sudo docker-compose exec backend python manage.py collectstatic --noinput
-    ```
+* Запустите docker образ:
+```
+docker run -it -p 5000:5000 te-kan
+```
+* После успешного запуска выполните команды (только после первого деплоя):
     - Примените миграции:
     ```
-    sudo docker-compose exec backend python manage.py migrate --noinput
-    ```
-    - Загрузите ингридиенты  в базу данных (необязательно):  
-    
-    ```
-    sudo docker-compose exec backend python manage.py load_data 
+    sudo docker-compose exec te-kan python manage.py migrate --noinput
     ```
     - Создать суперпользователя Django:
     ```
     sudo docker-compose exec backend python manage.py createsuperuser
     ```
-    - Проект будет доступен по вашему IP
+    - Проект будет доступен по локально по адресу: 127.0.0.1:5000
 
 автор: https://github.com/bobrolevv/
