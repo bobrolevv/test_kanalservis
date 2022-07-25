@@ -5,6 +5,7 @@ import xmltodict
 from django.shortcuts import render
 from oauth2client.service_account import ServiceAccountCredentials
 from .models import Data
+from .services import main as TG_bot
 
 
 def get_google_data():
@@ -29,6 +30,10 @@ def get_google_data():
         range='A2:D52', # TODO: получать диап. заполненных ячеек динамически
         majorDimension='ROWS'
     ).execute()
+
+    # запускаем бота проверки даты поставки
+    TG_bot(values['values'])
+
     return (values['values'])
 
 
@@ -41,6 +46,8 @@ def get_course():
     response = requests.get(
         url='http://www.cbr.ru/scripts/XML_daily.asp').text
     valutes = xmltodict.parse(response).get('ValCurs').get('Valute')
+
+    # из ответа сайт ЦБ РФ находим "доллар США" по его ID
     for val in valutes:
         if val['@ID'] == 'R01235':
             return float(val['Value'].replace(',', '.'))
@@ -52,9 +59,11 @@ def index(request):
     data = get_google_data()        # получаем данные из таблицы
     course = get_course()           # получаем курс доллара
     Data.objects.all().delete()     # удаляем старые данные из базы
+    total = 0
 
     # добавляем новые данные в базу
     for item in data:
+        total = total + float(item[2])
         Data.objects.create(
             serial_numb=item[0],
             order_numb=item[1],
@@ -68,7 +77,8 @@ def index(request):
     # формируем набор данных
     context = {
         'course': course,
-        'data': data
+        'data': data,
+        'total': total,
     }
 
     # возвращаем рендер страницы, используя шаблон index.html

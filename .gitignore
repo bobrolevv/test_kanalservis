@@ -2,3 +2,4 @@
 creds.json
 go-google-shet
 /_ignore/
+/app/exchange_app/.env
